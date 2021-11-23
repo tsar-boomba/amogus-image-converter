@@ -32,7 +32,7 @@ const ImageConverter = () => {
 					placeholder='resolution'
 					type='number'
 				/>
-				<input ref={fileInput} type='file' accept='.png,image/png' />
+				<input ref={fileInput} type='file' accept='.png,image/png,.jpg,.jpeg,image/jpeg' />
 				<button
 					onClick={(e) => {
 						e.stopPropagation();
