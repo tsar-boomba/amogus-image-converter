@@ -24,7 +24,7 @@ const getColorValues = (fileInput: HTMLInputElement, { resolution }: ConversionS
 				const rowValues: ColorValues = [];
 				for (let j = 0; j < lengthAmogus; j++) {
 					const { data } = ctx.getImageData(currX, currY, resolution, resolution);
-					rowValues.push({ r: data[0], g: data[1], b: data[2], a: data[3] });
+					rowValues.push(avgForSection(data, resolution));
 					currX += resolution;
 				}
 				colorValues.push(rowValues);
@@ -34,6 +34,21 @@ const getColorValues = (fileInput: HTMLInputElement, { resolution }: ConversionS
 			resolve(colorValues);
 		});
 	});
+};
+
+const avgForSection = (data: Uint8ClampedArray, resolution: number) => {
+	let r = 0,
+		g = 0,
+		b = 0;
+	for (let i = 0; i < data.length; i += 4) {
+		r += data[i];
+		g += data[i + 1];
+		b += data[i + 2];
+	}
+	r = r / (resolution * resolution);
+	g = g / (resolution * resolution);
+	b = b / (resolution * resolution);
+	return { r, g, b, a: 255 };
 };
 
 const loadImageFromFile = (
@@ -50,7 +65,7 @@ const loadImageFromFile = (
 		img.onload = () => {
 			canvas.width = img.width / scale;
 			canvas.height = img.height / scale;
-			ctx?.drawImage(img, 0, 0, img.width / scale, img.height / scale);
+			ctx.drawImage(img, 0, 0, img.width / scale, img.height / scale);
 			onLoad(ctx);
 		};
 		img.src = typeof readerE.target?.result === 'string' ? readerE.target.result : '';
