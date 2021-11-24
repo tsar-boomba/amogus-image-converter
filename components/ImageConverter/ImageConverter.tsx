@@ -1,16 +1,25 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import loadImage from './loadImage';
 import startConversion from './process/startConversion';
 
 export interface ConversionSettings {
 	resolution: number;
+	status: {
+		value: string;
+		set: React.Dispatch<React.SetStateAction<string>>;
+	};
 }
 
 const ImageConverter = () => {
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const fileInput = useRef<HTMLInputElement>(null);
+	const [status, setStatus] = useState('');
 	const [settings, setSettings] = useState<ConversionSettings>({
 		resolution: 16,
+		status: {
+			value: status,
+			set: setStatus,
+		},
 	});
 	const [errors, setErrors] = useState<string[]>([]);
 
@@ -43,7 +52,12 @@ const ImageConverter = () => {
 							fileInput.current
 						) {
 							setErrors([]);
-							startConversion(fileInput.current, settings);
+							try {
+								startConversion(fileInput.current, settings);
+							} catch (err) {
+								console.error(err);
+								setStatus('There was an error converting your image D:');
+							}
 						} else {
 							setErrors([
 								...errors,
@@ -59,6 +73,7 @@ const ImageConverter = () => {
 						{error}
 					</p>
 				))}
+				<h1>{status}</h1>
 			</div>
 		</>
 	);

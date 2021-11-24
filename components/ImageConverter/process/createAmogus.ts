@@ -12,32 +12,44 @@ const createAmogus = (colorValue: ColorValue, { resolution }: ConversionSettings
 				const editedFrames: ImageData[] = [];
 				frames.forEach((frame) => {
 					const { canvas, ctx } = loadImageToCanvas(frame, resolution);
-					let x = 0;
-					let y = 0;
-					const newData = new Uint8ClampedArray();
+					let newData = new Uint8ClampedArray();
 					for (let i = 0; i < resolution; i++) {
 						for (let j = 0; j < resolution; j++) {
-							const pixel = ctx.getImageData(x, y, 1, 1);
+							const pixel = ctx.getImageData(j, i, 1, 1);
 							const data = pixel.data;
 							const r = data[0];
 							const g = data[1];
 							const b = data[2];
 							const a = data[3];
-							console.log({ r, g, b, a });
 							if (r === 255 && g === 255 && b === 255 && a === 255) {
-								newData.set(
-									[colorValue.r, colorValue.g, colorValue.b],
-									newData.length,
-								);
+								newData = appedToUnit8Clampped(newData, [
+									colorValue.r,
+									colorValue.g,
+									colorValue.b,
+									255,
+								]);
+							} else {
+								newData = appedToUnit8Clampped(newData, [r, g, b, a]);
 							}
-							x += 1;
 						}
-						x = 0;
-						y += 1;
 					}
 					const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
 					image.data.set(newData);
+					// const tmpCanvas = document.createElement('canvas');
+					// const tmpCtx = tmpCanvas.getContext('2d');
+					// const newCanvas = document.createElement('canvas');
+					// const nCtx = newCanvas.getContext('2d');
+					// document.body.appendChild(newCanvas);
+					// tmpCanvas.width = resolution;
+					// tmpCanvas.height = resolution;
+					// const newImg = tmpCtx?.createImageData(resolution, resolution);
+					// newImg?.data.set(newData);
+					// tmpCtx?.putImageData(newImg, 0, 0);
+					// newCanvas.width = resolution;
+					// newCanvas.height = resolution;
+					// nCtx?.drawImage(tmpCanvas, 0, 0, resolution, resolution);
 					editedFrames.push(image);
+					canvas.remove();
 				});
 				resolve(editedFrames);
 			});
@@ -45,26 +57,30 @@ const createAmogus = (colorValue: ColorValue, { resolution }: ConversionSettings
 };
 
 const loadImageToCanvas = (frame: ParsedFrame, resolution: number) => {
-	const dims = frame.dims;
+	const sides = frame.dims;
+	const scale = (res: number, side: number) => side * (res / side);
 	const tmpCanvas = document.createElement('canvas');
 	const tmpCtx = tmpCanvas.getContext('2d');
 	const canvas = document.createElement('canvas');
 	const ctx = canvas.getContext('2d');
-	document.body.appendChild(canvas);
 	if (!ctx || !tmpCtx) throw new Error('No context found on canvas.');
-	tmpCanvas.width = dims.width;
-	tmpCanvas.height = dims.height;
-	const image = tmpCtx.createImageData(dims.width, dims.height);
+	tmpCanvas.width = sides.width;
+	tmpCanvas.height = sides.height;
+	const image = tmpCtx.createImageData(sides.width, sides.height);
 	image.data.set(frame.patch);
 	tmpCtx.putImageData(image, 0, 0);
-	ctx.drawImage(tmpCanvas, resolution, resolution);
-	canvas.width = dims.width;
-	canvas.height = dims.height;
-	ctx.drawImage(tmpCanvas, dims.left, dims.top);
-	ctx.scale(resolution, resolution);
-	canvas.width = resolution;
-	canvas.height = resolution;
+	canvas.width = scale(resolution, sides.width);
+	canvas.height = scale(resolution, sides.height);
+	ctx.drawImage(tmpCanvas, 0, 0, scale(resolution, sides.width), scale(resolution, sides.height));
+	tmpCanvas.remove();
 	return { canvas, ctx };
+};
+
+const appedToUnit8Clampped = (arr1: Uint8ClampedArray, arr2: ArrayLike<number>) => {
+	const tmp = new Uint8ClampedArray(arr1.byteLength + arr2.length);
+	tmp.set(arr1, 0);
+	tmp.set(arr2, arr1.byteLength);
+	return tmp;
 };
 
 export default createAmogus;
