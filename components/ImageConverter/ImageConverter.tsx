@@ -13,6 +13,7 @@ export interface ConversionSettings {
 const ImageConverter = () => {
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const fileInput = useRef<HTMLInputElement>(null);
+	const resultImg = useRef<HTMLImageElement>(null);
 	const [status, setStatus] = useState('');
 	const [settings, setSettings] = useState<ConversionSettings>({
 		resolution: 16,
@@ -31,7 +32,10 @@ const ImageConverter = () => {
 
 	return (
 		<>
-			<canvas ref={canvas} />
+			<div style={{ display: 'flex', alignItems: 'center' }}>
+				<canvas ref={canvas} />
+				<img ref={resultImg} />
+			</div>
 			<div style={{ display: 'flex', flexFlow: 'column' }}>
 				<label>Resolution (lower is more detailed, but slower)</label>
 				<input
@@ -49,11 +53,12 @@ const ImageConverter = () => {
 							fileInput.current?.files &&
 							settings.resolution > 0 &&
 							canvas.current &&
-							fileInput.current
+							fileInput.current &&
+							resultImg.current
 						) {
 							setErrors([]);
 							try {
-								startConversion(fileInput.current, settings);
+								startConversion(fileInput.current, resultImg.current, settings);
 							} catch (err) {
 								console.error(err);
 								setStatus('There was an error converting your image D:');

@@ -3,7 +3,11 @@ import createAmogus from './createAmogus';
 import createResultFrames from './createResultFrames';
 import getColorValues from './getColorValues';
 
-const startConversion = async (fileInput: HTMLInputElement, settings: ConversionSettings) => {
+const startConversion = async (
+	fileInput: HTMLInputElement,
+	resultImg: HTMLImageElement,
+	settings: ConversionSettings,
+) => {
 	const GIF = (await import('gif.js.optimized')).default;
 
 	if (!fileInput.files) throw new Error('No file recieved.');
@@ -35,12 +39,13 @@ const startConversion = async (fileInput: HTMLInputElement, settings: Conversion
 	});
 	completedFrames.forEach((frame) => finalGif.addFrame(frame, { delay: 50, copy: true }));
 	finalGif.on('finished', (blob: Blob) => {
-		const result = new Image();
-		document.body.appendChild(result);
+		if (!resultImg) throw new Error('Missing image from args.');
 		const resultUrl = URL.createObjectURL(blob);
-		result.src = resultUrl;
+		resultImg.src = resultUrl;
 	});
 	finalGif.render();
+
+	settings.status.set('Scroll down to see and download your gif!');
 };
 
 // const getImage = (file: Blob) => {
