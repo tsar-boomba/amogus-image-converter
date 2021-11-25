@@ -2,7 +2,10 @@ import { decompressFrames, ParsedFrame, parseGIF } from 'gifuct-js';
 import { ConversionSettings } from '../ImageConverter';
 import { ColorValue } from './getColorValues';
 
-const createAmogus = (colorValue: ColorValue, { resolution }: ConversionSettings) => {
+const createAmogus = (
+	colorValue: ColorValue,
+	{ resolution, backgroundColor }: ConversionSettings,
+) => {
 	return new Promise<ImageData[]>((resolve) => {
 		fetch('/amogus.gif')
 			.then((res) => res.arrayBuffer())
@@ -25,6 +28,14 @@ const createAmogus = (colorValue: ColorValue, { resolution }: ConversionSettings
 								colorValue.g,
 								colorValue.b,
 								255,
+							]);
+						} else if (r === 0 && g === 0 && b === 0 && a === 0) {
+							// for adding user-defined bg color
+							newData = appedToUnit8Clampped(newData, [
+								backgroundColor.r,
+								backgroundColor.g,
+								backgroundColor.b,
+								backgroundColor.a,
 							]);
 						} else {
 							newData = appedToUnit8Clampped(newData, [r, g, b, a]);

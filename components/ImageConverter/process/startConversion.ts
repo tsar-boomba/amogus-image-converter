@@ -31,13 +31,13 @@ const startConversion = async (
 	// putting amoguses on their point in img
 	const completedFrames = await createResultFrames(amoguses, settings);
 
-	// creating gif and putting in in img element
+	// creating gif and putting it in img element
 	const finalGif = new GIF({
-		quality: 5,
+		quality: 1,
 		width: amoguses[0].length * settings.resolution,
 		height: amoguses.length * settings.resolution,
 	});
-	completedFrames.forEach((frame) => finalGif.addFrame(frame, { delay: 50, copy: true }));
+	completedFrames.forEach((frame) => finalGif.addFrame(frame.canvas, { delay: 50 }));
 	finalGif.on('finished', (blob: Blob) => {
 		if (!resultImg) throw new Error('Missing image from args.');
 		const resultUrl = URL.createObjectURL(blob);
