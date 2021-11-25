@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import loadImage from './loadImage';
 import startConversion from './process/startConversion';
-import Image from 'next/image';
 
 export interface ConversionSettings {
 	resolution: number;
@@ -33,7 +32,7 @@ const ImageConverter = () => {
 
 	return (
 		<>
-			<div style={{ display: 'flex', alignItems: 'center' }}>
+			<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 				<canvas ref={canvas} />
 				<img ref={resultImg} />
 			</div>
@@ -79,8 +78,8 @@ const ImageConverter = () => {
 						{error}
 					</p>
 				))}
-				<h1>{status}</h1>
 			</div>
+			<h1>{status}</h1>
 		</>
 	);
 };
