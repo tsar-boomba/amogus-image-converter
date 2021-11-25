@@ -45,7 +45,7 @@ const startConversion = async (
 	});
 	finalGif.render();
 
-	settings.status.set('Scroll down to see and download your gif!');
+	settings.status.set('Download your gif above!');
 };
 
 // const getImage = (file: Blob) => {

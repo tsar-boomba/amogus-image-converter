@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import loadImage from './loadImage';
 import startConversion from './process/startConversion';
+import Image from 'next/image';
 
 export interface ConversionSettings {
 	resolution: number;
