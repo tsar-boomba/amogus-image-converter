@@ -46,7 +46,7 @@ const ImageConverter = () => {
 					onClick={(e) => {
 						e.stopPropagation();
 						if (
-							fileInput.current?.value &&
+							fileInput.current?.files &&
 							settings.resolution > 0 &&
 							canvas.current &&
 							fileInput.current
