@@ -13,6 +13,7 @@ const Examples = () => {
 							width={600}
 							height={300}
 							alt='Example with resolution 16'
+							priority={true}
 						/>
 						<p>Resolution: 16</p>
 					</div>

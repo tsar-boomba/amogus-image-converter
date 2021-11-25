@@ -17,7 +17,7 @@ const startConversion = async (
 
 	// creating and pushing amoguses to array
 	const amoguses: ImageData[][][] = [];
-	settings.status.set('Creating amoguses...');
+	settings.status.set('Creating amoguses (this can take a while)...');
 	for (let i = 0; i < colorValues.length; i++) {
 		const row = [];
 		for (let j = 0; j < colorValues[0].length; j++) {

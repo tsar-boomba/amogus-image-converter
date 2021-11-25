@@ -7,11 +7,13 @@ import styles from '../styles/Home.module.css';
 const Home: NextPage = () => {
 	return (
 		<div className={styles.container}>
-			<Head>
-				<title>Amogus Image Converter</title>
-			</Head>
-			<ImageConverter />
-			<Examples />
+			<main className={styles.main}>
+				<Head>
+					<title>Amogus Image Converter</title>
+				</Head>
+				<ImageConverter />
+				<Examples />
+			</main>
 		</div>
 	);
 };

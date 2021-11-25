@@ -12,25 +12,22 @@ const createAmogus = (colorValue: ColorValue, { resolution }: ConversionSettings
 				const editedFrames: ImageData[] = [];
 				frames.forEach((frame) => {
 					const { canvas, ctx } = loadImageToCanvas(frame, resolution);
+					const { data } = ctx.getImageData(0, 0, resolution, resolution);
 					let newData = new Uint8ClampedArray();
-					for (let i = 0; i < resolution; i++) {
-						for (let j = 0; j < resolution; j++) {
-							const pixel = ctx.getImageData(j, i, 1, 1);
-							const data = pixel.data;
-							const r = data[0];
-							const g = data[1];
-							const b = data[2];
-							const a = data[3];
-							if (r === 255 && g === 255 && b === 255 && a === 255) {
-								newData = appedToUnit8Clampped(newData, [
-									colorValue.r,
-									colorValue.g,
-									colorValue.b,
-									255,
-								]);
-							} else {
-								newData = appedToUnit8Clampped(newData, [r, g, b, a]);
-							}
+					for (let i = 0; i < data.length; i += 4) {
+						const r = data[i];
+						const g = data[i + 1];
+						const b = data[i + 2];
+						const a = data[i + 3];
+						if (r === 255 && g === 255 && b === 255 && a === 255) {
+							newData = appedToUnit8Clampped(newData, [
+								colorValue.r,
+								colorValue.g,
+								colorValue.b,
+								255,
+							]);
+						} else {
+							newData = appedToUnit8Clampped(newData, [r, g, b, a]);
 						}
 					}
 					const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
