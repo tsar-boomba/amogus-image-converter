@@ -21,8 +21,8 @@ const startConversion = async (
 	for (let i = 0; i < colorValues.length; i++) {
 		const row = [];
 		for (let j = 0; j < colorValues[0].length; j++) {
-			const amogusFrames = await createAmogus(colorValues[i][j], settings);
-			row.push(amogusFrames);
+			const amogusFrames = createAmogus(colorValues[i][j], settings);
+			row.push(await amogusFrames);
 		}
 		amoguses.push(row);
 	}
@@ -37,7 +37,7 @@ const startConversion = async (
 		width: amoguses[0].length * settings.resolution,
 		height: amoguses.length * settings.resolution,
 	});
-	completedFrames.forEach((frame) => finalGif.addFrame(frame.canvas, { delay: 50 }));
+	completedFrames.forEach((frame) => finalGif.addFrame(frame.canvas, { delay: settings.delay }));
 	finalGif.on('finished', (blob: Blob) => {
 		if (!resultImg) throw new Error('Missing image from args.');
 		const resultUrl = URL.createObjectURL(blob);

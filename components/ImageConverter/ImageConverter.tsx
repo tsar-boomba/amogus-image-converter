@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import loadImage from './loadImage';
 import startConversion from './process/startConversion';
+import Settings from './Settings';
+import settingsAreValid from './settingsAreValid';
 
 export interface ConversionSettings {
 	resolution: number;
@@ -10,6 +12,7 @@ export interface ConversionSettings {
 		b: number;
 		a: number;
 	};
+	delay: number;
 	status: {
 		value: string;
 		set: React.Dispatch<React.SetStateAction<string>>;
@@ -29,6 +32,7 @@ const ImageConverter = () => {
 			b: 0,
 			a: 255,
 		},
+		delay: 50,
 		status: {
 			value: status,
 			set: setStatus,
@@ -44,7 +48,14 @@ const ImageConverter = () => {
 
 	return (
 		<>
-			<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					marginTop: 16,
+				}}
+			>
 				<canvas ref={canvas} />
 				<img ref={resultImg} />
 			</div>
@@ -56,105 +67,32 @@ const ImageConverter = () => {
 					justifyContent: 'space-between',
 				}}
 			>
-				<label>Resolution (lower is more detailed, but slower)</label>
-				<input
-					onChange={(e) =>
-						setSettings({ ...settings, resolution: parseInt(e.target.value) })
-					}
-					defaultValue={16}
-					placeholder='resolution'
-					type='number'
-				/>
-				<label>Background Color (r, g, b, a)</label>
-				<div style={{ display: 'flex', alignItems: 'center' }}>
+				<Settings settings={settings} setSettings={setSettings} />
+				<div
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						marginTop: 16,
+					}}
+				>
 					<input
-						style={{ width: 75 }}
-						defaultValue={0}
-						placeholder='r'
-						type='number'
-						onChange={(e) =>
-							setSettings({
-								...settings,
-								backgroundColor: {
-									...settings.backgroundColor,
-									r: parseInt(e.target.value),
-								},
-							})
-						}
-					/>
-					<input
-						style={{ width: 75 }}
-						defaultValue={0}
-						placeholder='g'
-						type='number'
-						onChange={(e) =>
-							setSettings({
-								...settings,
-								backgroundColor: {
-									...settings.backgroundColor,
-									g: parseInt(e.target.value),
-								},
-							})
-						}
-					/>
-					<input
-						style={{ width: 75 }}
-						defaultValue={0}
-						placeholder='b'
-						type='number'
-						onChange={(e) =>
-							setSettings({
-								...settings,
-								backgroundColor: {
-									...settings.backgroundColor,
-									b: parseInt(e.target.value),
-								},
-							})
-						}
-					/>
-					<input
-						style={{ width: 75 }}
-						defaultValue={255}
-						placeholder='a'
-						type='number'
-						onChange={(e) =>
-							setSettings({
-								...settings,
-								backgroundColor: {
-									...settings.backgroundColor,
-									a: parseInt(e.target.value),
-								},
-							})
-						}
+						ref={fileInput}
+						type='file'
+						accept='.png,image/png,.jpg,.jpeg,image/jpeg'
 					/>
 				</div>
-				<input ref={fileInput} type='file' accept='.png,image/png,.jpg,.jpeg,image/jpeg' />
 				<button
 					onClick={(e) => {
 						e.stopPropagation();
 
-						const bg = settings.backgroundColor;
-						// check for valid background color
-						if (
-							bg.r < 0 ||
-							bg.g < 0 ||
-							bg.b < 0 ||
-							bg.a < 0 ||
-							bg.r > 255 ||
-							bg.g > 255 ||
-							bg.g > 255 ||
-							bg.a > 255
-						) {
-							return setErrors([
-								...errors,
-								'Background color values must be at least 0 and at most 255.',
-							]);
-						}
+						// checking settings
+						if (!settingsAreValid(settings, [errors, setErrors])) return;
 
 						// check for files resolution and refs
 						if (
 							fileInput.current?.files &&
-							settings.resolution > 15 &&
+							fileInput.current?.files[0] &&
 							canvas.current &&
 							fileInput.current &&
 							resultImg.current
@@ -167,12 +105,10 @@ const ImageConverter = () => {
 								setStatus('There was an error converting your image D:');
 							}
 						} else {
-							setErrors([
-								...errors,
-								'Be sure you have picked an image and resolution is at least 16.',
-							]);
+							setErrors([...errors, 'Be sure you have picked an image.']);
 						}
 					}}
+					style={{ marginTop: 16 }}
 				>
 					Start Conversion
 				</button>
