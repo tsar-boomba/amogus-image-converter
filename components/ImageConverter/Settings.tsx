@@ -22,7 +22,7 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 					onChange={(e) =>
 						setSettings({ ...settings, resolution: parseInt(e.target.value) })
 					}
-					defaultValue={16}
+					defaultValue={32}
 					placeholder='resolution'
 					type='number'
 				/>

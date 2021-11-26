@@ -25,7 +25,7 @@ const ImageConverter = () => {
 	const resultImg = useRef<HTMLImageElement>(null);
 	const [status, setStatus] = useState('');
 	const [settings, setSettings] = useState<ConversionSettings>({
-		resolution: 16,
+		resolution: 32,
 		backgroundColor: {
 			r: 0,
 			g: 0,
