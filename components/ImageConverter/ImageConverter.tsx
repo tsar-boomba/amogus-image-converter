@@ -56,7 +56,7 @@ const ImageConverter = () => {
 					marginTop: 16,
 				}}
 			>
-				<canvas ref={canvas} />
+				<canvas ref={canvas} width={0} height={0} />
 				<img ref={resultImg} />
 			</div>
 			<div
@@ -76,11 +76,28 @@ const ImageConverter = () => {
 						marginTop: 16,
 					}}
 				>
-					<input
-						ref={fileInput}
-						type='file'
-						accept='.png,image/png,.jpg,.jpeg,image/jpeg'
-					/>
+					<button
+						style={{
+							padding: '8px 16px',
+							backgroundColor: 'lightblue',
+							cursor: 'pointer',
+						}}
+						onClick={(e) => {
+							e.stopPropagation();
+
+							const fileUpload = fileInput.current;
+							fileUpload && fileUpload.click();
+						}}
+					>
+						<span id='fileName'>Choose Image</span>
+						<input
+							ref={fileInput}
+							style={{ position: 'absolute', left: '-99999rem' }}
+							type='file'
+							id='fileUpload'
+							accept='.png,image/png,.jpg,.jpeg,image/jpeg'
+						/>
+					</button>
 				</div>
 				<button
 					onClick={(e) => {
