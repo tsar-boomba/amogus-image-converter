@@ -1,11 +1,13 @@
 import { decompressFrames, ParsedFrame, parseGIF } from 'gifuct-js';
 import { ConversionSettings } from '../ImageConverter';
 import { ColorValue } from './getColorValues';
+import loader from '@assemblyscript/loader';
 
-const createAmogus = (
+const createAmogus = async (
 	colorValue: ColorValue,
 	{ resolution, backgroundColor }: ConversionSettings,
 ) => {
+	const wa = (await loader.instantiate<typeof wasm>(fetch('/wasm/optimized.wasm'))).exports;
 	return new Promise<ImageData[]>((resolve) => {
 		fetch('/amogus.gif')
 			.then((res) => res.arrayBuffer())
@@ -16,46 +18,31 @@ const createAmogus = (
 				frames.forEach((frame) => {
 					const { canvas, ctx } = loadImageToCanvas(frame, resolution);
 					const { data } = ctx.getImageData(0, 0, resolution, resolution);
+
 					let newData = new Uint8ClampedArray();
-					for (let i = 0; i < data.length; i += 4) {
-						const r = data[i];
-						const g = data[i + 1];
-						const b = data[i + 2];
-						const a = data[i + 3];
-						if (r === 255 && g === 255 && b === 255 && a === 255) {
-							newData = appedToUnit8Clampped(newData, [
-								colorValue.r,
-								colorValue.g,
-								colorValue.b,
-								255,
-							]);
-						} else if (r === 0 && g === 0 && b === 0 && a === 0) {
-							// for adding user-defined bg color
-							newData = appedToUnit8Clampped(newData, [
-								backgroundColor.r,
-								backgroundColor.g,
-								backgroundColor.b,
-								backgroundColor.a,
-							]);
-						} else {
-							newData = appedToUnit8Clampped(newData, [r, g, b, a]);
-						}
-					}
+
+					// webassembly stuff :D, find source code in /assembly/index.ts
+					const {
+						__getUint8ClampedArray,
+						Uint8ClampedArrayID,
+						__newArray,
+						processAmogus,
+					} = wa;
+					const dataPtr = processAmogus(
+						colorValue.r,
+						colorValue.g,
+						colorValue.b,
+						colorValue.a,
+						backgroundColor.r,
+						backgroundColor.g,
+						backgroundColor.b,
+						backgroundColor.a,
+						__newArray(Uint8ClampedArrayID, data),
+					);
+					newData = __getUint8ClampedArray(dataPtr);
+
 					const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
 					image.data.set(newData);
-					// const tmpCanvas = document.createElement('canvas');
-					// const tmpCtx = tmpCanvas.getContext('2d');
-					// const newCanvas = document.createElement('canvas');
-					// const nCtx = newCanvas.getContext('2d');
-					// document.body.appendChild(newCanvas);
-					// tmpCanvas.width = resolution;
-					// tmpCanvas.height = resolution;
-					// const newImg = tmpCtx?.createImageData(resolution, resolution);
-					// newImg?.data.set(newData);
-					// tmpCtx?.putImageData(newImg, 0, 0);
-					// newCanvas.width = resolution;
-					// newCanvas.height = resolution;
-					// nCtx?.drawImage(tmpCanvas, 0, 0, resolution, resolution);
 					editedFrames.push(image);
 					canvas.remove();
 				});
