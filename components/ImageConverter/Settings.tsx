@@ -17,7 +17,7 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 					marginTop: 16,
 				}}
 			>
-				<label>Resolution (lower is more detailed, but slower)</label>
+				<label>Resolution (32 - 64 recommended)</label>
 				<input
 					onChange={(e) =>
 						setSettings({ ...settings, resolution: parseInt(e.target.value) })
@@ -38,7 +38,14 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 				<label>Background Color (r, g, b, a)</label>
 				<div>
 					<input
-						style={{ width: 50 }}
+						style={{
+							width: 50,
+							color: 'red',
+							borderColor: 'red',
+							border: '2px solid red',
+							borderRadius: 8,
+							margin: 4,
+						}}
 						defaultValue={0}
 						placeholder='r'
 						type='number'
@@ -53,7 +60,14 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 						}
 					/>
 					<input
-						style={{ width: 50 }}
+						style={{
+							width: 50,
+							color: 'green',
+							borderColor: 'green',
+							border: '2px solid green',
+							borderRadius: 8,
+							margin: 4,
+						}}
 						defaultValue={0}
 						placeholder='g'
 						type='number'
@@ -68,7 +82,14 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 						}
 					/>
 					<input
-						style={{ width: 50 }}
+						style={{
+							width: 50,
+							color: 'blue',
+							borderColor: 'blue',
+							border: '2px solid blue',
+							borderRadius: 8,
+							margin: 4,
+						}}
 						defaultValue={0}
 						placeholder='b'
 						type='number'
@@ -83,7 +104,14 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 						}
 					/>
 					<input
-						style={{ width: 50 }}
+						style={{
+							width: 50,
+							color: 'grey',
+							borderColor: 'grey',
+							border: '2px solid grey',
+							borderRadius: 8,
+							margin: 4,
+						}}
 						defaultValue={255}
 						placeholder='a'
 						type='number'
