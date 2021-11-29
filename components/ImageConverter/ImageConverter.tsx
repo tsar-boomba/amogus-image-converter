@@ -1,3 +1,4 @@
+import { ASUtil, instantiate } from '@assemblyscript/loader';
 import React, { useEffect, useRef, useState } from 'react';
 import loadImage from './loadImage';
 import startConversion from './process/startConversion';
@@ -17,6 +18,7 @@ export interface ConversionSettings {
 		value: string;
 		set: React.Dispatch<React.SetStateAction<string>>;
 	};
+	wa: Promise<ASUtil & typeof wasm>;
 }
 
 const ImageConverter = () => {
@@ -37,6 +39,7 @@ const ImageConverter = () => {
 			value: status,
 			set: setStatus,
 		},
+		wa: instantiate<typeof wasm>(fetch('/wasm/optimized.wasm')).then((res) => res.exports),
 	});
 	const [errors, setErrors] = useState<string[]>([]);
 
@@ -57,7 +60,7 @@ const ImageConverter = () => {
 				}}
 			>
 				<canvas ref={canvas} width={0} height={0} />
-				<img ref={resultImg} />
+				<img ref={resultImg} alt='Result gif' style={{ marginTop: 16 }} />
 			</div>
 			<div
 				style={{

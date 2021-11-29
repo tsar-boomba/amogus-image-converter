@@ -5,9 +5,8 @@ import loader from '@assemblyscript/loader';
 
 const createAmogus = async (
 	colorValue: ColorValue,
-	{ resolution, backgroundColor }: ConversionSettings,
+	{ resolution, backgroundColor, wa }: ConversionSettings,
 ) => {
-	const wa = (await loader.instantiate<typeof wasm>(fetch('/wasm/optimized.wasm'))).exports;
 	return new Promise<ImageData[]>((resolve) => {
 		fetch('/amogus.gif')
 			.then((res) => res.arrayBuffer())
@@ -15,7 +14,7 @@ const createAmogus = async (
 			.then((buf) => {
 				const frames = decompressFrames(parseGIF(buf), true);
 				const editedFrames: ImageData[] = [];
-				frames.forEach((frame) => {
+				frames.forEach(async (frame) => {
 					const { canvas, ctx } = loadImageToCanvas(frame, resolution);
 					const { data } = ctx.getImageData(0, 0, resolution, resolution);
 
@@ -27,7 +26,7 @@ const createAmogus = async (
 						Uint8ClampedArrayID,
 						__newArray,
 						processAmogus,
-					} = wa;
+					} = await wa;
 					const dataPtr = processAmogus(
 						colorValue.r,
 						colorValue.g,
