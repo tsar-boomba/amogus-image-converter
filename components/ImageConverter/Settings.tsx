@@ -6,6 +6,12 @@ interface SettingsProps {
 	setSettings: React.Dispatch<React.SetStateAction<ConversionSettings>>;
 }
 
+const inputStyle: React.CSSProperties = {
+	padding: 4,
+	border: '2px solid #000000',
+	borderRadius: 8,
+};
+
 const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 	return (
 		<>
@@ -25,6 +31,7 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 					defaultValue={32}
 					placeholder='resolution'
 					type='number'
+					style={inputStyle}
 				/>
 			</div>
 			<div
@@ -141,6 +148,7 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 					placeholder='delay (ms)'
 					type='number'
 					onChange={(e) => setSettings({ ...settings, delay: parseInt(e.target.value) })}
+					style={inputStyle}
 				/>
 			</div>
 		</>

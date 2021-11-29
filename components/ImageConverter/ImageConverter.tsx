@@ -5,6 +5,7 @@ import startConversion from './process/startConversion';
 import Settings from './Settings';
 import settingsAreValid from './settingsAreValid';
 import Head from 'next/head';
+import colors from '../../styles/colors';
 
 export interface ConversionSettings {
 	resolution: number;
@@ -72,6 +73,12 @@ const ImageConverter = () => {
 					flexFlow: 'column',
 					alignItems: 'center',
 					justifyContent: 'space-between',
+					backgroundColor: colors.secondary,
+					color: 'white',
+					margin: 32,
+					padding: 16,
+					borderRadius: 8,
+					boxShadow: '0px 0px 24px 4px #00000080',
 				}}
 			>
 				<Settings settings={settings} setSettings={setSettings} />
@@ -85,9 +92,12 @@ const ImageConverter = () => {
 				>
 					<button
 						style={{
-							padding: '8px 16px',
-							backgroundColor: 'lightblue',
+							padding: '8px',
+							backgroundColor: colors.primary,
 							cursor: 'pointer',
+							border: 0,
+							borderRadius: 8,
+							boxShadow: '0px 0px 12px 4px #00000050',
 						}}
 						onClick={(e) => {
 							e.stopPropagation();
@@ -96,12 +106,13 @@ const ImageConverter = () => {
 							fileUpload && fileUpload.click();
 						}}
 					>
-						<span id='fileName'>Choose Image</span>
+						<span id='fileName' style={{ fontWeight: 'bold' }}>
+							Choose Image
+						</span>
 						<input
 							ref={fileInput}
 							style={{ position: 'absolute', left: '-99999rem' }}
 							type='file'
-							id='fileUpload'
 							accept='.png,image/png,.jpg,.jpeg,image/jpeg'
 						/>
 					</button>
@@ -132,16 +143,25 @@ const ImageConverter = () => {
 							setErrors([...errors, 'Be sure you have picked an image.']);
 						}
 					}}
-					style={{ marginTop: 16 }}
+					style={{
+						padding: '8px',
+						backgroundColor: colors.primary,
+						cursor: 'pointer',
+						border: 0,
+						borderRadius: 8,
+						boxShadow: '0px 0px 12px 4px #00000050',
+						marginTop: 16,
+						fontWeight: '600',
+					}}
 				>
 					Start Conversion
 				</button>
-				{errors.map((error, index) => (
-					<p key={index} style={{ color: 'red', textAlign: 'center', width: 300 }}>
-						{error}
-					</p>
-				))}
 			</div>
+			{errors.map((error, index) => (
+				<p key={index} style={{ color: 'red', textAlign: 'center', width: 300 }}>
+					{error}
+				</p>
+			))}
 			<h1>{status}</h1>
 		</>
 	);
