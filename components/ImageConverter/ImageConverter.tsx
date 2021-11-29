@@ -4,6 +4,7 @@ import loadImage from './loadImage';
 import startConversion from './process/startConversion';
 import Settings from './Settings';
 import settingsAreValid from './settingsAreValid';
+import Head from 'next/head';
 
 export interface ConversionSettings {
 	resolution: number;
@@ -51,6 +52,9 @@ const ImageConverter = () => {
 
 	return (
 		<>
+			<Head>
+				<title>{status ? status : 'Amogus Image Converter'}</title>
+			</Head>
 			<div
 				style={{
 					display: 'flex',
