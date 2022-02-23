@@ -4,13 +4,12 @@ import { ColorValue } from './getColorValues';
 
 const createAmogus = async (
 	colorValue: ColorValue,
-	frames: ParsedFrame[],
+	frames: { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D }[],
 	{ resolution, backgroundColor, wa }: ConversionSettings,
 ) => {
 	return new Promise<ImageData[]>((resolve) => {
 		const editedFrames: ImageData[] = [];
-		frames.forEach(async (frame) => {
-			const { canvas, ctx } = loadImageToCanvas(frame, resolution);
+		frames.forEach(async ({ canvas, ctx }) => {
 			const { data } = ctx.getImageData(0, 0, resolution, resolution);
 
 			let newData = new Uint8ClampedArray();
