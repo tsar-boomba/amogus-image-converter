@@ -1,3 +1,4 @@
+import { decompressFrames, parseGIF } from 'gifuct-js';
 import { ConversionSettings } from '../ImageConverter';
 import createAmogus from './createAmogus';
 import createResultFrames from './createResultFrames';
@@ -12,6 +13,7 @@ const startConversion = async (
 	const amogusGifBuf = await fetch('/amogus.gif')
 		.then((res) => res.arrayBuffer())
 		.then((arrBuf) => Buffer.from(arrBuf));
+	const amogusGifFrames = decompressFrames(parseGIF(amogusGifBuf), true);
 
 	if (!fileInput.files) throw new Error('No file recieved.');
 	settings.status.set('Reading image...');
@@ -24,7 +26,7 @@ const startConversion = async (
 	for (let i = 0; i < colorValues.length; i++) {
 		const row = [];
 		for (let j = 0; j < colorValues[0].length; j++) {
-			const amogusFrames = createAmogus(colorValues[i][j], amogusGifBuf, settings);
+			const amogusFrames = createAmogus(colorValues[i][j], amogusGifFrames, settings);
 			row.push(await amogusFrames);
 		}
 		amoguses.push(row);

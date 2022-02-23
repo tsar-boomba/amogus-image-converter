@@ -1,14 +1,13 @@
-import { decompressFrames, ParsedFrame, parseGIF } from 'gifuct-js';
+import { ParsedFrame } from 'gifuct-js';
 import { ConversionSettings } from '../ImageConverter';
 import { ColorValue } from './getColorValues';
 
 const createAmogus = async (
 	colorValue: ColorValue,
-	buf: Buffer,
+	frames: ParsedFrame[],
 	{ resolution, backgroundColor, wa }: ConversionSettings,
 ) => {
 	return new Promise<ImageData[]>((resolve) => {
-		const frames = decompressFrames(parseGIF(buf), true);
 		const editedFrames: ImageData[] = [];
 		frames.forEach(async (frame) => {
 			const { canvas, ctx } = loadImageToCanvas(frame, resolution);
