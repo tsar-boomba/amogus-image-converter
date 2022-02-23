@@ -1,7 +1,6 @@
 import { decompressFrames, ParsedFrame, parseGIF } from 'gifuct-js';
 import { ConversionSettings } from '../ImageConverter';
 import { ColorValue } from './getColorValues';
-import loader from '@assemblyscript/loader';
 
 const createAmogus = async (
 	colorValue: ColorValue,
@@ -60,13 +59,6 @@ const loadImageToCanvas = (frame: ParsedFrame, resolution: number) => {
 	ctx.drawImage(tmpCanvas, 0, 0, scale(resolution, sides.width), scale(resolution, sides.height));
 	tmpCanvas.remove();
 	return { canvas, ctx };
-};
-
-const appedToUnit8Clampped = (arr1: Uint8ClampedArray, arr2: ArrayLike<number>) => {
-	const tmp = new Uint8ClampedArray(arr1.byteLength + arr2.length);
-	tmp.set(arr1, 0);
-	tmp.set(arr2, arr1.byteLength);
-	return tmp;
 };
 
 export default createAmogus;
