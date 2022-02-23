@@ -32,7 +32,7 @@ const About = () => {
 
 				<h2>Improvements</h2>
 				<ul>
-					<li>Faster algorithm</li>
+					<li>Faster algorithm (Done :P)</li>
 					<li>Better styling</li>
 				</ul>
 				<Link href='/'>
