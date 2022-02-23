@@ -5,7 +5,7 @@ const Examples = () => {
 		<div>
 			<h1>Examples</h1>
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
-				<Image src='/example1.jpeg' width={600} height={300} alt='Example image' />
+				<Image src='/example1.jpeg' width={600} height={300} alt='Example image' priority />
 				<div style={{ display: 'flex', alignItems: 'center', marginTop: 16 }}>
 					<div>
 						<Image
@@ -13,7 +13,7 @@ const Examples = () => {
 							width={600}
 							height={300}
 							alt='Example with resolution 16'
-							priority={true}
+							priority
 						/>
 						<p>Resolution: 16</p>
 					</div>
@@ -23,6 +23,7 @@ const Examples = () => {
 							width={600}
 							height={300}
 							alt='Example with resolution 32'
+							priority
 						/>
 						<p>Resolution: 32</p>
 					</div>

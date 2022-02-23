@@ -9,6 +9,9 @@ const startConversion = async (
 	settings: ConversionSettings,
 ) => {
 	const GIF = (await import('gif.js.optimized')).default;
+	const amogusGifBuf = await fetch('/amogus.gif')
+		.then((res) => res.arrayBuffer())
+		.then((arrBuf) => Buffer.from(arrBuf));
 
 	if (!fileInput.files) throw new Error('No file recieved.');
 	settings.status.set('Reading image...');
@@ -21,7 +24,7 @@ const startConversion = async (
 	for (let i = 0; i < colorValues.length; i++) {
 		const row = [];
 		for (let j = 0; j < colorValues[0].length; j++) {
-			const amogusFrames = createAmogus(colorValues[i][j], settings);
+			const amogusFrames = createAmogus(colorValues[i][j], amogusGifBuf, settings);
 			row.push(await amogusFrames);
 		}
 		amoguses.push(row);

@@ -5,48 +5,40 @@ import loader from '@assemblyscript/loader';
 
 const createAmogus = async (
 	colorValue: ColorValue,
+	buf: Buffer,
 	{ resolution, backgroundColor, wa }: ConversionSettings,
 ) => {
 	return new Promise<ImageData[]>((resolve) => {
-		fetch('/amogus.gif')
-			.then((res) => res.arrayBuffer())
-			.then((arrBuf) => Buffer.from(arrBuf))
-			.then((buf) => {
-				const frames = decompressFrames(parseGIF(buf), true);
-				const editedFrames: ImageData[] = [];
-				frames.forEach(async (frame) => {
-					const { canvas, ctx } = loadImageToCanvas(frame, resolution);
-					const { data } = ctx.getImageData(0, 0, resolution, resolution);
+		const frames = decompressFrames(parseGIF(buf), true);
+		const editedFrames: ImageData[] = [];
+		frames.forEach(async (frame) => {
+			const { canvas, ctx } = loadImageToCanvas(frame, resolution);
+			const { data } = ctx.getImageData(0, 0, resolution, resolution);
 
-					let newData = new Uint8ClampedArray();
+			let newData = new Uint8ClampedArray();
 
-					// webassembly stuff :D, find source code in /assembly/index.ts
-					const {
-						__getUint8ClampedArray,
-						Uint8ClampedArrayID,
-						__newArray,
-						processAmogus,
-					} = await wa;
-					const dataPtr = processAmogus(
-						colorValue.r,
-						colorValue.g,
-						colorValue.b,
-						colorValue.a,
-						backgroundColor.r,
-						backgroundColor.g,
-						backgroundColor.b,
-						backgroundColor.a,
-						__newArray(Uint8ClampedArrayID, data),
-					);
-					newData = __getUint8ClampedArray(dataPtr);
+			// webassembly stuff :D, find source code in /assembly/index.ts
+			const { __getUint8ClampedArray, Uint8ClampedArrayID, __newArray, processAmogus } =
+				await wa;
+			const dataPtr = processAmogus(
+				colorValue.r,
+				colorValue.g,
+				colorValue.b,
+				colorValue.a,
+				backgroundColor.r,
+				backgroundColor.g,
+				backgroundColor.b,
+				backgroundColor.a,
+				__newArray(Uint8ClampedArrayID, data),
+			);
+			newData = __getUint8ClampedArray(dataPtr);
 
-					const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
-					image.data.set(newData);
-					editedFrames.push(image);
-					canvas.remove();
-				});
-				resolve(editedFrames);
-			});
+			const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			image.data.set(newData);
+			editedFrames.push(image);
+			canvas.remove();
+		});
+		resolve(editedFrames);
 	});
 };
 
