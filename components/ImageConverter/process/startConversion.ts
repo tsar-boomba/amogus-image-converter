@@ -30,7 +30,6 @@ const startConversion = async (
 	// getting avg color value for the resolution by resoltuion area
 	const colorValues = await getColorValues(fileInput, settings);
 
-	console.log('loading gif frames');
 	settings.status.set('Loading gif frames...');
 	// loading gif frames into canvases
 	const loadedFrames = (await settings.frames).map((frame) => {
@@ -39,8 +38,6 @@ const startConversion = async (
 
 	// creating and pushing amoguses to array
 	const amoguses: ImageData[][][] = [];
-	console.log('creating amoguses');
-	console.log(colorValues);
 	settings.status.set('Creating amoguses (this can take a while)...');
 	for (let i = 0; i < colorValues.length; i++) {
 		const row = [];
@@ -51,7 +48,6 @@ const startConversion = async (
 		amoguses.push(row);
 	}
 
-	console.log('composing result');
 	settings.status.set('Composing result...');
 	// putting amoguses on their point in img
 	const completedFrames = await createResultFrames(amoguses, settings);
