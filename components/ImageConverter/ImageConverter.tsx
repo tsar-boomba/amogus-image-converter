@@ -1,4 +1,3 @@
-import { ASUtil, instantiate } from '@assemblyscript/loader';
 import React, { useEffect, useRef, useState } from 'react';
 import loadImage from './loadImage';
 import startConversion from './process/startConversion';
@@ -6,6 +5,7 @@ import Settings from './Settings';
 import settingsAreValid from './settingsAreValid';
 import Head from 'next/head';
 import colors from '../../styles/colors';
+import { getFrames } from './process/getFrames';
 
 export interface ConversionSettings {
 	resolution: number;
@@ -20,7 +20,7 @@ export interface ConversionSettings {
 		value: string;
 		set: React.Dispatch<React.SetStateAction<string>>;
 	};
-	wa: Promise<ASUtil & typeof wasm>;
+	frames: Promise<Buffer[]>;
 }
 
 const ImageConverter = () => {
@@ -36,18 +36,22 @@ const ImageConverter = () => {
 			b: 0,
 			a: 255,
 		},
-		delay: 50,
+		delay: 75,
 		status: {
 			value: status,
 			set: setStatus,
 		},
-		wa: instantiate<typeof wasm>(fetch('/wasm/optimized.wasm')).then((res) => res.exports),
+		frames: undefined as any,
 	});
 	const [errors, setErrors] = useState<string[]>([]);
 
 	useEffect(() => {
 		if (canvas.current && fileInput.current) {
 			loadImage(canvas.current, fileInput.current, 4);
+		}
+
+		if (!settings.frames) {
+			settings.frames = getFrames();
 		}
 	}, []);
 

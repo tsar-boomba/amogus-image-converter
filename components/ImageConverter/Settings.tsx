@@ -144,7 +144,7 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 			>
 				<label>Delay (milliseconds between gif frames)</label>
 				<input
-					defaultValue={50}
+					defaultValue={75}
 					placeholder='delay (ms)'
 					type='number'
 					onChange={(e) => setSettings({ ...settings, delay: parseInt(e.target.value) })}

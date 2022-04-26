@@ -1,26 +1,20 @@
-import { decompressFrames, ParsedFrame, parseGIF } from 'gifuct-js';
 import { ConversionSettings } from '../ImageConverter';
 import createAmogus from './createAmogus';
 import createResultFrames from './createResultFrames';
 import getColorValues from './getColorValues';
 
-const loadImageToCanvas = (frame: ParsedFrame, resolution: number) => {
-	const sides = frame.dims;
-	const scale = (res: number, side: number) => side * (res / side);
-	const tmpCanvas = document.createElement('canvas');
-	const tmpCtx = tmpCanvas.getContext('2d');
+const FRAME_WIDTH = 75;
+const FRAME_HEIGHT = 65;
+
+const loadImageToCanvas = (frame: Buffer) => {
 	const canvas = document.createElement('canvas');
+	canvas.width = FRAME_WIDTH;
+	canvas.height = FRAME_HEIGHT;
 	const ctx = canvas.getContext('2d');
-	if (!ctx || !tmpCtx) throw new Error('No context found on canvas.');
-	tmpCanvas.width = sides.width;
-	tmpCanvas.height = sides.height;
-	const image = tmpCtx.createImageData(sides.width, sides.height);
-	image.data.set(frame.patch);
-	tmpCtx.putImageData(image, 0, 0);
-	canvas.width = scale(resolution, sides.width);
-	canvas.height = scale(resolution, sides.height);
-	ctx.drawImage(tmpCanvas, 0, 0, scale(resolution, sides.width), scale(resolution, sides.height));
-	tmpCanvas.remove();
+	if (!ctx) throw new Error('No context found on canvas.');
+	const image = ctx.createImageData(FRAME_WIDTH, FRAME_HEIGHT);
+	image.data.set(frame);
+	ctx.putImageData(image, 0, 0);
 	return { canvas, ctx };
 };
 
@@ -30,32 +24,35 @@ const startConversion = async (
 	settings: ConversionSettings,
 ) => {
 	const GIF = (await import('gif.js.optimized')).default;
-	const amogusGifBuf = await fetch('/amogus.gif')
-		.then((res) => res.arrayBuffer())
-		.then((arrBuf) => Buffer.from(arrBuf));
-	const amogusGifFrames = decompressFrames(parseGIF(amogusGifBuf), true);
-	const loadedFrames = amogusGifFrames.map((frame) => {
-		return loadImageToCanvas(frame, settings.resolution);
-	});
 
 	if (!fileInput.files) throw new Error('No file recieved.');
 	settings.status.set('Reading image...');
 	// getting avg color value for the resolution by resoltuion area
 	const colorValues = await getColorValues(fileInput, settings);
 
+	console.log('loading gif frames');
+	settings.status.set('Loading gif frames...');
+	// loading gif frames into canvases
+	const loadedFrames = (await settings.frames).map((frame) => {
+		return loadImageToCanvas(frame);
+	});
+
 	// creating and pushing amoguses to array
 	const amoguses: ImageData[][][] = [];
+	console.log('creating amoguses');
+	console.log(colorValues);
 	settings.status.set('Creating amoguses (this can take a while)...');
 	for (let i = 0; i < colorValues.length; i++) {
 		const row = [];
 		for (let j = 0; j < colorValues[0].length; j++) {
 			const amogusFrames = createAmogus(colorValues[i][j], loadedFrames, settings);
-			row.push(await amogusFrames);
+			row.push(amogusFrames);
 		}
 		amoguses.push(row);
 	}
-	settings.status.set('Composing result...');
 
+	console.log('composing result');
+	settings.status.set('Composing result...');
 	// putting amoguses on their point in img
 	const completedFrames = await createResultFrames(amoguses, settings);
 
