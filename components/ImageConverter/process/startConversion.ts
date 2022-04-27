@@ -42,7 +42,7 @@ const startConversion = async (
 	for (let i = 0; i < colorValues.length; i++) {
 		const row = [];
 		for (let j = 0; j < colorValues[0].length; j++) {
-			const amogusFrames = createAmogus(colorValues[i][j], loadedFrames, settings);
+			const amogusFrames = await createAmogus(colorValues[i][j], loadedFrames, settings);
 			row.push(amogusFrames);
 		}
 		amoguses.push(row);
