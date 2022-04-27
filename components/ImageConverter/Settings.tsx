@@ -151,6 +151,23 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 					style={inputStyle}
 				/>
 			</div>
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					marginTop: 16,
+				}}
+			>
+				<label>Wave</label>
+				<input
+					defaultChecked
+					placeholder='delay (ms)'
+					type='checkbox'
+					onChange={(e) => setSettings({ ...settings, wave: e.target.checked })}
+					style={inputStyle}
+				/>
+			</div>
 		</>
 	);
 };
