@@ -160,13 +160,48 @@ const Settings: React.VFC<SettingsProps> = ({ settings, setSettings }) => {
 				}}
 			>
 				<label>Wave</label>
-				<input
+				<select
 					defaultChecked
-					placeholder='delay (ms)'
-					type='checkbox'
-					onChange={(e) => setSettings({ ...settings, wave: e.target.checked })}
+					placeholder='wave'
+					onChange={(e) =>
+						setSettings({
+							...settings,
+							wave: e.target.value as ConversionSettings['wave'],
+						})
+					}
 					style={inputStyle}
-				/>
+				>
+					<option value='none'>none</option>
+					<option value='vertical'>vertical ⬆️</option>
+					<option value='horizontal'>horizontal ⬅️</option>
+					<option value='diagonal'>diagonal ↖️</option>
+				</select>
+			</div>
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					marginTop: 16,
+				}}
+			>
+				<label>Wave Size</label>
+				<select
+					defaultChecked
+					placeholder='wave'
+					onChange={(e) =>
+						setSettings({
+							...settings,
+							waveSize: parseFloat(e.target.value) as ConversionSettings['waveSize'],
+						})
+					}
+					style={inputStyle}
+				>
+					<option value='1'>1x</option>
+					<option value='2'>2x</option>
+					<option value='3'>3x</option>
+					<option value='0.5'>1/2x</option>
+				</select>
 			</div>
 		</>
 	);

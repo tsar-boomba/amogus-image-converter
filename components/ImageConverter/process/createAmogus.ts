@@ -27,7 +27,7 @@ const replaceColors = (target: ColorValue, bg: ColorValue, data: Uint8ClampedArr
 					newData.push(target.r, target.g, target.b, target.a);
 				} else if (r == 131 && g == 148 && b == 191 && a == 255) {
 					newData.push(darkened.r, darkened.g, darkened.b, darkened.a);
-				} else if (r == 0 && g == 0 && b == 0) {
+				} else if (r == 0 && g == 4 && b == 0) {
 					// for adding user-defined bg color
 					newData.push(bg.r, bg.g, bg.b, bg.a);
 				} else {

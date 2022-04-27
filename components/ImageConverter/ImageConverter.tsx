@@ -9,7 +9,8 @@ import { getFrames } from './process/getFrames';
 
 export interface ConversionSettings {
 	resolution: number;
-	wave: boolean;
+	wave: 'none' | 'horizontal' | 'vertical' | 'diagonal';
+	waveSize: number;
 	backgroundColor: {
 		r: number;
 		g: number;
@@ -31,7 +32,8 @@ const ImageConverter = () => {
 	const [status, setStatus] = useState('');
 	const [settings, setSettings] = useState<ConversionSettings>({
 		resolution: 32,
-		wave: true,
+		wave: 'none',
+		waveSize: 1,
 		backgroundColor: {
 			r: 0,
 			g: 0,
@@ -119,7 +121,7 @@ const ImageConverter = () => {
 							ref={fileInput}
 							style={{ position: 'absolute', left: '-99999rem' }}
 							type='file'
-							accept='.png,image/png,.jpg,.jpeg,image/jpeg,.webp,image/webp'
+							accept='.png,image/png,.jpg,.jpeg,image/jpeg,.webp,image/webp,.svg'
 						/>
 					</button>
 				</div>
