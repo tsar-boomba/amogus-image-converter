@@ -17,9 +17,8 @@ const createResultFrames = (
 				return { canvas, ctx };
 			});
 
-			let waveIndex = 0;
-
 			const newFrames = frames.map((frame, frameIndex) => {
+				let waveIndex = 0;
 				let x = 0;
 				let y = 0;
 				for (let i = 0; i < amoguses.length; i++) {
