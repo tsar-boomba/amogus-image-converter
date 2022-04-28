@@ -20,6 +20,16 @@ const Home: NextPage = () => {
 						</a>
 					</Link>
 				</div>
+				<div>
+					<a
+						target='_blank'
+						rel='noopener noreferrer'
+						href='https://github.com/tsar-boomba/amogus-image-converter'
+						style={{ fontSize: 24, color: 'blue', textDecoration: 'underline' }}
+					>
+						Source Code :)
+					</a>
+				</div>
 				<Examples />
 			</main>
 		</div>
