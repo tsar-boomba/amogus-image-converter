@@ -22,6 +22,7 @@ export interface ConversionSettings {
 		value: string;
 		set: React.Dispatch<React.SetStateAction<string>>;
 	};
+	progressBar: HTMLDivElement;
 	frames: Promise<Buffer[]>;
 }
 
@@ -29,6 +30,7 @@ const ImageConverter = () => {
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const fileInput = useRef<HTMLInputElement>(null);
 	const resultImg = useRef<HTMLImageElement>(null);
+	const progressBar = useRef<HTMLDivElement>(null);
 	const [status, setStatus] = useState('');
 	const [settings, setSettings] = useState<ConversionSettings>({
 		resolution: 32,
@@ -45,6 +47,7 @@ const ImageConverter = () => {
 			value: status,
 			set: setStatus,
 		},
+		progressBar: undefined as any,
 		frames: undefined as any,
 	});
 	const [errors, setErrors] = useState<string[]>([]);
@@ -56,6 +59,10 @@ const ImageConverter = () => {
 
 		if (!settings.frames) {
 			settings.frames = getFrames();
+		}
+
+		if (progressBar?.current) {
+			setSettings({ ...settings, progressBar: progressBar.current });
 		}
 	}, []);
 
@@ -138,9 +145,11 @@ const ImageConverter = () => {
 							fileInput.current?.files[0] &&
 							canvas.current &&
 							fileInput.current &&
-							resultImg.current
+							resultImg.current &&
+							progressBar.current
 						) {
 							setErrors([]);
+							progressBar.current.style.width = '0';
 							try {
 								startConversion(fileInput.current, resultImg.current, settings);
 							} catch (err) {
@@ -170,6 +179,24 @@ const ImageConverter = () => {
 					{error}
 				</p>
 			))}
+			<div
+				style={{
+					backgroundColor: 'lightblue',
+					width: '95%',
+					borderRadius: '0.5rem',
+					height: '1rem',
+				}}
+			>
+				<div
+					ref={progressBar}
+					style={{
+						width: '0',
+						backgroundColor: colors.secondary,
+						borderRadius: '0.5rem',
+						height: '1rem',
+					}}
+				/>
+			</div>
 			<h1>{status}</h1>
 		</>
 	);

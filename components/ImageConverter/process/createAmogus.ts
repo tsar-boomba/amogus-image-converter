@@ -1,5 +1,5 @@
 import { ConversionSettings } from '../ImageConverter';
-import { ColorValue } from './getColorValues';
+import { ColorValue, ImageColorValues } from './getColorValues';
 
 function adjust(color: Omit<ColorValue, 'a'> & { a?: number }, percent: number): ColorValue {
 	let { r, g, b } = color;
@@ -42,7 +42,8 @@ const replaceColors = (target: ColorValue, bg: ColorValue, data: Uint8ClampedArr
 const createAmogus = async (
 	colorValue: ColorValue,
 	frames: { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D }[],
-	{ resolution, backgroundColor }: ConversionSettings,
+	progress: number,
+	{ resolution, backgroundColor, progressBar }: ConversionSettings,
 ) => {
 	return new Promise<ImageData[]>((resolve) => {
 		const editedFrames: ImageData[] = [];
@@ -50,6 +51,8 @@ const createAmogus = async (
 			const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 			const newData = await replaceColors(colorValue, backgroundColor, data);
+
+			progressBar.style.width = `${progress}%`;
 
 			const image = ctx.createImageData(canvas.width, canvas.height);
 			image.data.set(newData);

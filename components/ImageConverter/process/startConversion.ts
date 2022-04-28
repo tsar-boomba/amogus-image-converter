@@ -39,10 +39,19 @@ const startConversion = async (
 	// creating and pushing amoguses to array
 	const amoguses: ImageData[][][] = [];
 	settings.status.set('Creating amoguses (this can take a while)...');
+	let amogusesCreated = 0;
 	for (let i = 0; i < colorValues.length; i++) {
 		const row = [];
 		for (let j = 0; j < colorValues[0].length; j++) {
-			const amogusFrames = await createAmogus(colorValues[i][j], loadedFrames, settings);
+			amogusesCreated += 1;
+			const progress = (amogusesCreated / (colorValues.length * colorValues[0].length)) * 100;
+
+			const amogusFrames = await createAmogus(
+				colorValues[i][j],
+				loadedFrames,
+				progress,
+				settings,
+			);
 			row.push(amogusFrames);
 		}
 		amoguses.push(row);
